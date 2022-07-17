@@ -137,6 +137,17 @@ public class Vector2D implements Comparable<Vector2D> {
         return new Vector2D(lhs.getX() - rhs.getX(), lhs.getY() - rhs.getY());
     }
 
+    public static Vector2D scale(Vector2D vector2D, float scale)
+    {
+        return new Vector2D(vector2D.getX() * scale, vector2D.getY() * scale);
+    }
+
+    public static Vector2D scale(Vector2D vector2D, float scaleX, float scaleY)
+    {
+        return new Vector2D(vector2D.getX() * scaleX, vector2D.getY() * scaleY);
+    }
+
+
 
     public static String toJSON(Vector2D vector2D)
     {
