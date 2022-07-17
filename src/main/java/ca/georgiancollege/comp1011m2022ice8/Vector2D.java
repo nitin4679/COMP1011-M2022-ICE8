@@ -1,5 +1,7 @@
 package ca.georgiancollege.comp1011m2022ice8;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Nitin Nitin
  */
@@ -9,9 +11,9 @@ public class Vector2D implements Comparable<Vector2D> {
 
 
 
-    private int m_id;
-    private float m_x;
-    private float m_y;
+    @SerializedName("id") private int m_id;
+    @SerializedName("x") private float m_x;
+    @SerializedName("y") private float m_y;
 
 
     //Constructors
