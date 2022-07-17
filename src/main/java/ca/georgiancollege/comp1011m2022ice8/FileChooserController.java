@@ -1,5 +1,7 @@
 package ca.georgiancollege.comp1011m2022ice8;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,10 +10,16 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.lang.reflect.Type;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Scanner;
+
+import com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.JsonReader;
 
 public class FileChooserController
 {
@@ -49,6 +57,29 @@ public class FileChooserController
         }
     }
 
+    private void SaveJSONDataToFile()
+    {
+        Gson gson = new Gson();
+
+        try
+                (
+                        Formatter output = new Formatter(activeFilePath)
+                )
+        {
+            ArrayList<Vector2D> vectors = DBManager.Instance().readVectorTable();
+
+            vectors.sort(null);
+
+            System.out.println(gson.toJson(vectors.toArray()));
+
+            output.format("%s", gson.toJson(vectors.toArray()));
+
+        }
+        catch(Exception exception)
+        {
+            exception.printStackTrace();
+        }
+    }
 
     private void ReadFromFile()
     {
@@ -65,11 +96,45 @@ public class FileChooserController
         }
     }
 
+    private void ReadJSONDataFromFile()
+    {
+        Gson gson = new Gson();
+
+        try
+                (
+                        Scanner input = new Scanner(Paths.get(activeFilePath))
+                )
+        {
+            // Create an empty container of vectors
+            ArrayList<Vector2D> vectors = new ArrayList<Vector2D>();
+
+            // Deserialization
+            Type ArrayListOfTypeVector2D = new TypeToken<ArrayList<Vector2D>>(){}.getType();
+
+            while(input.hasNext())
+            {
+                vectors = gson.fromJson(input.next(), ArrayListOfTypeVector2D);
+            }
+
+            // test
+            for (var vector: vectors)
+            {
+                System.out.println(vector);
+            }
+
+        }
+        catch(Exception exception)
+        {
+            exception.printStackTrace();
+        }
+    }
+
     private void ShowFileDialog(FileDialogType type)
     {
         // configure dialog (modal window) allowing selection of a file
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
                 new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"),
                 new FileChooser.ExtensionFilter("All Files (*.*)", "*.*")
         );
@@ -90,7 +155,8 @@ public class FileChooserController
                 if(file != null)
                 {
                     activeFilePath = file.getName();
-                    ReadFromFile();
+                    //ReadFromFile();
+                    ReadJSONDataFromFile();
                 }
 
                 else
@@ -100,13 +166,14 @@ public class FileChooserController
                 break;
             case SAVE:
                 fileChooser.setTitle("Save File");
-                fileChooser.setInitialFileName("vector2d.txt");
+                fileChooser.setInitialFileName("vector2d.json");
                 file = fileChooser.showSaveDialog(borderPane.getScene().getWindow());
                 // process selected Path or display a message
                 if(file != null)
                 {
                     activeFilePath = file.getName();
-                    SaveToFile();
+                    //SaveToFile();
+                    SaveJSONDataToFile();
                 }
 
                 else
