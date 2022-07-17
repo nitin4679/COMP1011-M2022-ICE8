@@ -1,5 +1,6 @@
 package ca.georgiancollege.comp1011m2022ice8;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -99,6 +100,13 @@ public class Vector2D implements Comparable<Vector2D> {
         m_x = new_x;
     }
 
+    public void set(int id, float x, float y)
+    {
+        setID(id);
+        setX(x);
+        setY(y);
+    }
+
     // computed read-only property
     public float getMagnitude() {
         return Utility.Instance().Distance(new Vector2D(0.0f,0.0f), this);
@@ -109,35 +117,67 @@ public class Vector2D implements Comparable<Vector2D> {
 
 // Public Methods
 
-    /**
-     * This method adds a Vector2D to a Vector2D
-     * @param vector
-     * @return
-     */
-    public Vector2D add(Vector2D vector) {
-        m_x += vector.getX();
-        m_y += vector.getY();
-        return this;
-    }
-
-    /**
-     * @param vector
-     * @return
-     */
-    public Vector2D subtract(Vector2D vector) {
-        m_x = vector.getX() - m_x;
-        m_y = vector.getY() - m_y;
-        return this;
-
-    }
-
     public String toOneDecimalString()
     {
         var x  = String.format("%.1f", getX());
         var y   = String.format("%.1f", getX());
         return ("("+ x + "," + y + ")");
+    }
+
+ // PUBLIC STATIC METHODS
+
+    public static Vector2D add(Vector2D lhs, Vector2D rhs)
+    {
+        return new Vector2D(lhs.getX() + rhs.getX(), lhs.getY() + rhs.getX());
+    }
 
 
+    public static Vector2D subtract(Vector2D lhs, Vector2D rhs)
+    {
+        return new Vector2D(lhs.getX() - rhs.getX(), lhs.getY() - rhs.getY());
+    }
+
+
+    public static String toJSON(Vector2D vector2D)
+    {
+        Gson gson = new Gson();
+        return gson.toJson(vector2D);
+    }
+
+    public static Vector2D fromJSON(String json)
+    {
+        Gson gson = new Gson();
+        return gson.fromJson(json,Vector2D.class);
+    }
+
+    public static Vector2D right()
+    {
+        return new Vector2D(1.0f, 0.0f);
+    }
+
+    public static Vector2D left()
+    {
+        return new Vector2D(-1.0f, 0.0f);
+    }
+
+    public static Vector2D up()
+    {
+        return new Vector2D(0.0f, -1.0f);
+    }
+
+    public static Vector2D down()
+    {
+        return new Vector2D(0.0f, 1.0f);
+    }
+
+
+    public static Vector2D one(){
+        return new Vector2D(1.0f, 1.0f);
+    }
+
+    public static Vector2D zero()
+    {
+        return new Vector2D(0.0f, 0.0f);
     }
 
     // Overridden Methods
